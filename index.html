@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Portfolio</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        body {
+            background: #0c0c0c;
+            color: #00ff00;
+            font-family: 'Fira Code', monospace;
+            line-height: 1.6;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .terminal {
+            width: 100%;
+            height: 100vh;
+            max-width: none;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .terminal-header {
+            background: #1a1a1a;
+            padding: 10px 15px;
+            border-radius: 8px 8px 0 0;
+            border: 1px solid #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca3f; }
+        
+        .terminal-title {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .terminal-body {
+            background: #0c0c0c;
+            border: 1px solid #333;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .prompt {
+            color: #00ff00;
+            margin-bottom: 10px;
+        }
+        
+        .user {
+            color: #00bfff;
+        }
+        
+        .path {
+            color: #ffa500;
+        }
+        
+        .command-input {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Fira Code', monospace;
+            font-size: 16px;
+            outline: none;
+            width: 100%;
+            caret-color: #00ff00;
+        }
+        
+        .output {
+            margin: 10px 0;
+            white-space: pre-wrap;
+        }
+        
+        .help-command {
+            color: #00bfff;
+        }
+        
+        .help-desc {
+            color: #cccccc;
+            margin-left: 20px;
+        }
+        
+        .ascii-art {
+            color: #00ff00;
+            font-size: 12px;
+            line-height: 1;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+            margin: 5px 0;
+            letter-spacing: 0.1em;
+        }
+        
+        .error {
+            color: #ff6b6b;
+        }
+        
+        .success {
+            color: #51cf66;
+        }
+        
+        .info {
+            color: #74c0fc;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .typewriter {
+            overflow: hidden;
+            border-right: 2px solid #00ff00;
+            white-space: nowrap;
+        }
+        
+        .typing-cursor {
+            display: inline-block;
+            background-color: #00ff00;
+            width: 8px;
+            height: 16px;
+            animation: blink-caret 1s step-end infinite;
+        }
+        
+        @keyframes blink-caret {
+            from, to { opacity: 1 }
+            50% { opacity: 0; }
+        }
+        
+        .typing-container {
+            min-height: 1em;
+        }
+        
+        .portfolio-item {
+            border: 1px solid #333;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        
+        .portfolio-item h3 {
+            color: #00bfff;
+            margin-bottom: 5px;
+        }
+        
+        .portfolio-item .tech {
+            color: #ffa500;
+            font-size: 12px;
+        }
+        
+        .game-board {
+            font-family: monospace;
+            line-height: 1;
+        }
+        
+        .cursor {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .dino-game-container {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background-color: #0c0c0c;
+        }
+        
+        .dino-game-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #00ff00;
+        }
+        
+        #dino-game-canvas {
+            border: 1px solid #333;
+            background-color: #f7f7f7;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .dino-game-controls {
+            text-align: center;
+            margin-top: 10px;
+            color: #ffa500;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0c0c0c;
+            color: #00ff00;
+            font-family: 'Fira Code', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .loading-content {
+            text-align: center;
+            max-width: 600px;
+            padding: 20px;
+        }
+        
+        .loading-text {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+        
+        .loading-joke {
+            margin: 15px 0;
+            font-size: 14px;
+            color: #ffff00; /* Yellow color for jokes */
+            min-height: 20px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #00ff00;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-percentage {
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="ascii-art">
+  __  __      _         _ _   __     __                   __ _ 
+ |  \/  |    | |       | (_)  \ \   / /                  / _(_)
+ | \  / | ___| |__   __| |_    \ \_/ /__  _   _ ___  ___| |_ _ 
+ | |\/| |/ _ \ '_ \ / _` | |    \   / _ \| | | / __|/ _ \  _| |
+ | |  | |  __/ | | | (_| | |     | | (_) | |_| \__ \  __/ | | |
+ |_|  |_|\___|_| |_|\__,_|_|     |_|\___/ \__,_|___/\___|_| |_|
+                                                               
+                                         
+Loading... Terminal Portfolio...
+            </div>
+            <div id="loading-text" class="loading-text">Loading system files...</div>
+            <div id="loading-joke" class="loading-joke"></div>
+            <div id="progress-bar" class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <div id="progress-percentage" class="progress-percentage">0%</div>
+        </div>
+    </div>
+    
+    <div id="terminal" class="terminal hidden">
+        <div class="terminal-header">
+            <div class="terminal-dots">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+            </div>
+            <div class="terminal-title">portfolio@terminal:~</div>
+        </div>
+        <div class="terminal-body">
+            <div class="ascii-art">
+  __  __      _         _ _   __     __                   __ _ 
+ |  \/  |    | |       | (_)  \ \   / /                  / _(_)
+ | \  / | ___| |__   __| |_    \ \_/ /__  _   _ ___  ___| |_ _ 
+ | |\/| |/ _ \ '_ \ / _` | |    \   / _ \| | | / __|/ _ \  _| |
+ | |  | |  __/ | | | (_| | |     | | (_) | |_| \__ \  __/ | | |
+ |_|  |_|\___|_| |_|\__,_|_|     |_|\___/ \__,_|___/\___|_| |_|
+            </div>
+            
+            <div id="output" style="flex: 1; overflow-y: auto; margin-bottom: 10px;"></div>
+            
+            <div class="prompt">
+                <span class="user">visitor</span>@<span class="path">portfolio</span>:~$ 
+                <input type="text" class="command-input" id="commandInput" placeholder="Type 'help' to get started..." autofocus>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Static text constants for the terminal
+        const TEXT = {
+            // Welcome message
+            WELCOME_MESSAGE: `Type <span class="help-command">help</span> to see available commands.
+Type <span class="help-command">about</span> to learn more about me.
+Type <span class="help-command">portfolio</span> to see my work.
+
+<span class="info">Hint: There might be some hidden commands... try exploring!</span>`,
+            
+            // Help text
+            HELP_TEXT: `Available commands:
+
+<span class="help-command">about</span>        <span class="help-desc">Learn more about me</span>
+<span class="help-command">portfolio</span>    <span class="help-desc">View my projects and work</span>
+<span class="help-command">skills</span>       <span class="help-desc">See my technical skills</span>
+<span class="help-command">contact</span>      <span class="help-desc">Get my contact information</span>
+<span class="help-command">version</span>      <span class="help-desc">Show portfolio version</span>
+<span class="help-command">ls</span>           <span class="help-desc">List files in current directory</span>
+<span class="help-command">cat [file]</span>   <span class="help-desc">Read a file</span>
+<span class="help-command">date</span>         <span class="help-desc">Show current date and time</span>
+<span class="help-command">whoami</span>       <span class="help-desc">Display current user</span>
+<span class="help-command">clear</span>        <span class="help-desc">Clear the terminal</span>
+
+<span class="info">Tip: Use arrow keys to navigate command history!</span>`,
+            
+            // About text
+            ABOUT_TEXT: `<span class="success">About Me</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+👋 Hi! I'm a passionate Backend Developer with a love for creating 
+   innovative web solutions and exploring new technologies.
+
+🎓 <span class="info">Education:</span> Computer Software Engineer Graduate
+💼 <span class="info">Experience:</span> 15+ years in web development, backend services
+🌟 <span class="info">Passion:</span> Building applications with clean code
+
+<span class="info">What drives me:</span>
+• Problem-solving and continuous learning
+• Creating seamless user experiences  
+• Contributing to open-source projects
+• Staying updated with latest tech trends
+
+<span class="success">Fun fact:</span> I love building terminal-style interfaces (like this one!) 
+and hidden easter eggs in my projects. Keep exploring! 🎮`,
+            
+            // Portfolio text
+            PORTFOLIO_TEXT: `<span class="success">My Portfolio</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<div class="portfolio-item">
+<h3>🛒 Senior developer at E-Commerce Platform @ Khanoumi.com</h3>
+<div class="tech">Microservices • Distributed Caching • Redis • Microsoft Orleans • Hexagonal Architecture • Payment Gateway</div>
+Full-featured online store with user authentication, payment processing,
+and admin dashboard. Handles 1000+ daily transactions.
+</div>
+
+<div class="portfolio-item">
+<h3>💰 Team lead at B2B AND B2C Web api @ Middle East Bank</h3>
+<div class="tech">Oracle • Clean Architect • Kafka • Elastic</div>
+train junior developers and build infrastructure of backend api for back-office and mobile app. Used by 10+ companies.
+</div>
+
+<div class="portfolio-item">
+<h3>🚛 Team lead at ERP System @ Titan Diesel (Scania Official Seller) </h3>
+<div class="tech">SOA • Blazor • Asp.net</div>
+develop and design erp system based on blazor and asp.net core for sales and after-sales services.
+</div>
+
+<span class="info">Want to see more? Check out my GitHub or contact me!</span>`,
+            
+            // Skills text
+            SKILLS_TEXT: `<span class="success">Technical Skills</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+<span class="info">Frontend Development:</span>
+Blazor (90%)
+JavaScript/TypeScript (60%)
+HTML5/CSS3 (50%)
+Asp.net MVC (50%)
+
+<span class="info">Backend Development:</span>
+Web api (99%)
+Docker (60%)
+
+<span class="info">Database & Tools:</span>
+Sql Server (60%)
+Oracle (50%)
+
+<span class="info">Other:</span>
+Agile/Scrum (80%)`,
+            
+            // Contact text
+            CONTACT_TEXT: `<span class="success">Contact Information</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📧 <span class="info">Email:</span>     mahdi.usefi at gmail.com
+🔗 <span class="info">LinkedIn:</span>  linkedin.com/in/mehdi-yousefi-781309251
+🐙 <span class="info">GitHub:</span>    github.com/mahdiit
+
+<span class="success">Let's connect!</span> I'm always open to discussing new opportunities,
+collaborating on interesting projects, or just having a chat about technology.
+
+<span class="info">Response time:</span> Usually within 24 hours
+<span class="info">Availability:</span> Open for freelance and full-time opportunities`,
+            
+            // Secret command text
+            SECRET_TEXT: `<span class="success">🎉 Secret Command Activated! 🎦</span>
+
+You've discovered one of the hidden features! Here are some secret commands:
+
+<span class="help-command">game</span>    <span class="help-desc">Start a treasure hunt adventure!</span>
+
+<span class="info">There might be more secrets hidden throughout the site...</span>
+<span class="success">Keep exploring, digital archaeologist!</span> 🔍`,
+            
+            // Game start text
+            GAME_START_TEXT: `<span class="success">🎮 TREASURE HUNT GAME STARTED! 🎮</span>
+
+Find all the treasures ($) and avoid the walls (#)!
+
+<span class="info">Controls:</span>
+w - Move up
+a - Move left  
+s - Move down
+d - Move right
+quit - Exit game
+
+<span class="help-command">Goal:</span> Collect all 4 treasures to win!`,
+            
+            // Win game text
+            WIN_GAME_TEXT: `<span class="success">🎉 CONGRATULATIONS! YOU WON! 🎉</span>
+
+You collected all treasures! You're a true digital explorer!
+
+<span class="info">Game completed with \${score}/4 treasures!</span>`,
+            
+            // Command not found text
+            COMMAND_NOT_FOUND: `Command not found: \${command}. Type 'help' for available commands.`,
+            
+            // Usage text
+            USAGE_CAT: 'Usage: cat [filename]',
+            
+            // General command responses
+            GAME_ALREADY_RUNNING: 'Game already running! Use w/a/s/d to move, "quit" to exit.',
+            NO_GAME_RUNNING_START: 'No game running. Type "game" to start!',
+            NO_GAME_RUNNING: 'No game is currently running.',
+            GAME_EXITED: 'Game exited. Thanks for playing! 🎮',
+            INVALID_MOVE: 'Invalid move! Use w/a/s/d to move.',
+            WALL_HIT: '💥 Ouch! You hit a wall!',
+            TREASURE_COLLECTED: '✨ Treasure collected! ✨',
+            
+            // Dinosaur T-Rex game text
+            DINO_MENU: `<span class="success">🦖 DINO T-REX GAME 🦖</span>
+
+<span class="info">Select an option:</span>
+1. <span class="help-command">play</span> - Start the T-Rex game
+2. <span class="help-command">instructions</span> - Show game instructions
+3. <span class="help-command">quit</span> - Exit to main menu
+
+<span class="info">Use:</span> [space] to jump, [down] to duck`,
+            
+            // Dinosaur game instructions
+            DINO_INSTRUCTIONS: `<span class="success">🦖 T-REX GAME INSTRUCTIONS 🦖</span>
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+How to play:
+• Press <span class="help-command">space</span> or <span class="help-command">up arrow</span> to jump over obstacles
+• Press <span class="help-command">down arrow</span> to duck under low obstacles
+• The game speeds up as your score increases
+• Try to achieve the highest score possible!
+
+<span class="info">Controls:</span>
+• <span class="help-command">Space</span> or <span class="help-command">Up Arrow</span> → Jump
+• <span class="help-command">Down Arrow</span> → Duck
+• <span class="help-command">R</span> → Restart after game ends
+
+<span class="info">Pro tip:</span> Time your jumps to clear the cacti and birds!`,
+            
+            // Dinosaur game start text
+            DINO_START_TEXT: `<span class="success">🦖 T-REX GAME STARTED! 🦖</span>
+
+Get ready to jump! Press SPACE to start running, then jump over the cacti.
+
+<span class="info">Score: 0</span>`,
+            
+            // Programming jokes
+            PROGRAMMING_JOKES: [
+                "Why do programmers prefer nature? Because it has too many bugs!",
+                "Why do Java developers wear glasses? Because they don't C#!",                
+                "Why did the programmer quit his job? Because he didn't get arrays!",
+                "Why do programmers prefer dark mode? Because light attracts bugs!",
+                "Why did the developer go broke? Because he used up all his cache!",                
+                "Why do C# and Java developers keep breaking their keyboards? Because they use a strongly typed language!",
+                "Why did the JavaScript developer feel insecure? Because he didn't know if he was null or undefined!",                
+                "How many programmers does it take to change a light bulb? None, that's a hardware issue!",
+                "Why do programmers hate nature? Too many bugs, not enough features!",
+                "Why did the developer break up with the debugger? Because he found someone else to fix his issues!"
+            ],
+            
+            // Files description
+            FILES_DESC: 'Welcome to my portfolio! Use commands like "about", "portfolio", and "skills" to learn more.',
+            SECRET_FILE_DESC: 'You found a secret file! Try typing "game" to unlock a hidden treasure hunt.',
+            PROJECTS_DESC: 'Recent projects:\n- Senior Software Engineer at Khanoumi.com E-commerce Platform\nMicroservice, Distributed caching, Payment Gateway,Hegxagonal Architecture, Microsoft Orleans\n\n- Team lead @ Middle East Bank\nMicroservice Architecture, DevOps Automation, Clean Architect, Kafka\n\n- Full-Stack Developer @ Titan Diesel (Scania Official Service Provider)\nErp, Sales System, Blazor, SOA'
+        };
+
+        class Terminal {
+            constructor() {
+                this.output = document.getElementById('output');
+                this.input = document.getElementById('commandInput');
+                this.commandHistory = [];
+                this.historyIndex = -1;
+                this.gameState = {
+                    active: false,
+                    board: [],
+                    playerX: 0,
+                    playerY: 0,
+                    score: 0,
+                    treasures: []
+                };
+                
+                this.commands = {
+                    help: this.showHelp.bind(this),
+                    about: this.showAbout.bind(this),
+                    portfolio: this.showPortfolio.bind(this),
+                    skills: this.showSkills.bind(this),
+                    contact: this.showContact.bind(this),
+                    clear: this.clearScreen.bind(this),
+                    date: this.showDate.bind(this),
+                    whoami: this.showWhoami.bind(this),
+                    ls: this.listFiles.bind(this),
+                    cat: this.readFile.bind(this),
+                    secret: this.secretCommand.bind(this),
+                    game: this.startGame.bind(this),
+                    dino: this.startDinoGame.bind(this),
+                    version: this.showVersion.bind(this),
+                    matrix: this.startMatrixEffect.bind(this),
+                    w: this.gameMove.bind(this),
+                    a: this.gameMove.bind(this),
+                    s: this.gameMove.bind(this),
+                    d: this.gameMove.bind(this),
+                    quit: this.quitGame.bind(this)
+                };
+                
+                this.files = {
+                    'readme.txt': TEXT.FILES_DESC,
+                    'secret.txt': TEXT.SECRET_FILE_DESC,
+                    'projects.log': TEXT.PROJECTS_DESC
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                // Start the DOS-like loading sequence instead of directly showing the terminal
+                this.startLoadingSequence();
+            }
+            
+            startLoadingSequence() {
+                const loadingText = document.getElementById('loading-text');
+                const loadingJoke = document.getElementById('loading-joke');
+                const progressBar = document.getElementById('progress-fill');
+                const progressPercentage = document.getElementById('progress-percentage');
+                
+                // Array of loading messages
+                const messages = [
+                    "Loading system files...",
+                    "Initializing kernel...",
+                    "Starting services...",
+                    "Loading drivers...",
+                    "Mounting filesystems...",
+                    "Booting subsystems...",
+                    "Finalizing startup..."
+                ];
+                
+                // Select a random programming joke
+                const randomJoke = TEXT.PROGRAMMING_JOKES[Math.floor(Math.random() * TEXT.PROGRAMMING_JOKES.length)];
+                
+                let currentMessageIndex = 0;
+                const totalDuration = 5000; // 5 seconds
+                const messageInterval = totalDuration / messages.length;
+                
+                // Update progress based on time
+                const startTime = Date.now();
+                
+                const updateProgress = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / totalDuration * 100, 100);
+                    
+                    // Update progress bar
+                    progressBar.style.width = `${progress}%`;
+                    progressPercentage.textContent = `${Math.floor(progress)}%`;
+                    
+                    // Update message based on progress
+                    const messageIndex = Math.min(Math.floor(elapsed / messageInterval), messages.length - 1);
+                    if (messageIndex !== currentMessageIndex) {
+                        currentMessageIndex = messageIndex;
+                        loadingText.textContent = messages[currentMessageIndex];
+                    }
+                    
+                    // Show the joke at about 50% completion
+                    if (progress > 10 && loadingJoke.textContent === '') {
+                        loadingJoke.innerHTML = `<span class="info">${randomJoke}</span>`;
+                    }
+                    
+                    if (elapsed < totalDuration) {
+                        setTimeout(updateProgress, 50); // Update every 50ms for smooth animation
+                    } else {
+                        // Loading complete, show terminal
+                        this.showTerminal();
+                    }
+                };
+                
+                updateProgress();
+            }
+            
+            showTerminal() {
+                // Hide loading screen
+                document.getElementById('loading-screen').classList.add('hidden');
+                
+                // Show terminal
+                document.getElementById('terminal').classList.remove('hidden');
+                
+                // Add the input event listener after terminal is visible
+                this.input.addEventListener('keydown', this.handleInput.bind(this));
+                
+                // Focus on input and show welcome message after a short delay to ensure DOM is ready
+                setTimeout(() => {
+                    this.input.focus();
+                    this.showWelcome();
+                }, 100);
+                
+                // Set up inactivity timer functionality
+                this.setupInactivityTimer();
+            }
+            
+            setupInactivityTimer() {
+                this.inactivityTimer = null;
+                
+                // Define the inactivity timeout (1 minute = 60000 ms)
+                const inactivityTimeout = 60000;
+                
+                // Add event listeners to detect user activity
+                document.addEventListener('keydown', this.resetInactivityTimer.bind(this));
+                document.addEventListener('mousedown', this.resetInactivityTimer.bind(this));
+                document.addEventListener('mousemove', this.resetInactivityTimer.bind(this));
+                document.addEventListener('touchstart', this.resetInactivityTimer.bind(this));
+                
+                // Start the initial timer
+                this.resetInactivityTimer();
+            }
+            
+            resetInactivityTimer() {
+                if (this.inactivityTimer) {
+                    clearTimeout(this.inactivityTimer);
+                }
+                
+                this.inactivityTimer = setTimeout(() => {
+                    this.showInactivityMessage();
+                }, 60000); // 1 minute
+            }
+            
+            showInactivityMessage() {
+                // Array of random inactivity messages
+                const messages = [
+                    "Where are you? Still here?",
+                    "Hello? Are you still with us?",
+                    "Don't leave me alone in the terminal...",
+                    "Are you lost in the digital world?",
+                    "Still exploring? Hope you find something interesting!",
+                    "The terminal is getting lonely without your commands...",
+                    "Where did you go? The matrix?",
+                    "Just waiting for your next command...",
+                    "Are you a ghost in the machine?",
+                    "The terminal hangs in silence, waiting..."
+                ];
+                
+                // Pick a random message
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+                
+                // Show the message with typewriter animation
+                this.typeText(`\n${randomMessage}`, 'info');
+            }
+            
+            showWelcome() {
+                this.addOutput(TEXT.WELCOME_MESSAGE, 'info');
+            }
+            
+            handleInput(e) {
+                // Reset inactivity timer on any input
+                this.resetInactivityTimer();
+                
+                if (e.key === 'Enter') {
+                    const command = this.input.value.trim().toLowerCase();
+                    if (command) {
+                        this.commandHistory.unshift(command);
+                        this.historyIndex = -1;
+                        this.executeCommand(command);
+                    }
+                    this.input.value = '';
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    this.handleTabCompletion();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (this.historyIndex < this.commandHistory.length - 1) {
+                        this.historyIndex++;
+                        this.input.value = this.commandHistory[this.historyIndex] || '';
+                    }
+                } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (this.historyIndex > 0) {
+                        this.historyIndex--;
+                        this.input.value = this.commandHistory[this.historyIndex] || '';
+                    } else {
+                        this.historyIndex = -1;
+                        this.input.value = '';
+                    }
+                } else if (this.dinoGameState && this.dinoGameState.active) {
+                    // Handle dino game controls
+                    if (e.code === 'Space' || e.key === ' ') {
+                        e.preventDefault();
+                        if (!this.dinoGameState.isJumping && !this.dinoGameState.gameOver) {
+                            this.jumpDino();
+                        } else if (this.dinoGameState.gameOver) {
+                            this.restartDinoGame();
+                        }
+                    } else if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        // Ducking mechanics would go here
+                    } else if ((e.key === 'r' || e.key === 'R') && this.dinoGameState.gameOver) {
+                        this.restartDinoGame();
+                    }
+                }
+            }
+            
+            handleTabCompletion() {
+                const currentValue = this.input.value;
+                const commandWords = currentValue.split(' ');
+                const currentCommand = commandWords[0].toLowerCase();
+                
+                // If we're working with the first part of the command
+                if (commandWords.length === 1) {
+                    // Get all available commands
+                    const allCommands = Object.keys(this.commands);
+                    
+                    // Find commands that start with the current input
+                    const matchingCommands = allCommands.filter(cmd => 
+                        cmd.startsWith(currentCommand) && cmd !== currentCommand
+                    );
+                    
+                    // If there's exactly one match, complete it
+                    if (matchingCommands.length === 1) {
+                        this.input.value = matchingCommands[0];
+                    } 
+                    // If there are multiple matches, show possible completions
+                    else if (matchingCommands.length > 1) {
+                        // Add space to the input if it doesn't have one
+                        if (!currentValue.endsWith(' ')) {
+                            // Find the common prefix of all matches
+                            let commonPrefix = matchingCommands[0];
+                            for (let i = 1; i < matchingCommands.length; i++) {
+                                for (let j = 0; j < commonPrefix.length; j++) {
+                                    if (commonPrefix[j] !== matchingCommands[i][j]) {
+                                        commonPrefix = commonPrefix.substring(0, j);
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            // If the common prefix is longer than what we have, use it
+                            if (commonPrefix.length > currentCommand.length) {
+                                this.input.value = commonPrefix;
+                            } else {
+                                this.showCompletions(matchingCommands);
+                            }
+                        }
+                    }
+                }
+                // For multiple word commands, check if the first word is a valid command
+                else if (commandWords.length > 1 && this.commands[currentCommand]) {
+                    // Some commands like 'cat' might have file completions
+                    if (currentCommand === 'cat') {
+                        const fileName = commandWords[1].toLowerCase();
+                        const matchingFiles = Object.keys(this.files).filter(file => 
+                            file.startsWith(fileName) && file !== fileName
+                        );
+                        
+                        if (matchingFiles.length === 1) {
+                            this.input.value = `${currentCommand} ${matchingFiles[0]}`;
+                        } else if (matchingFiles.length > 1) {
+                            // Find common prefix
+                            let commonPrefix = matchingFiles[0];
+                            for (let i = 1; i < matchingFiles.length; i++) {
+                                for (let j = 0; j < commonPrefix.length; j++) {
+                                    if (commonPrefix[j] !== matchingFiles[i][j]) {
+                                        commonPrefix = commonPrefix.substring(0, j);
+                                        break;
+                                    }
+                                }
+                            }
+                            
+                            if (commonPrefix.length > fileName.length) {
+                                this.input.value = `${currentCommand} ${commonPrefix}`;
+                            } else {
+                                this.showCompletions(matchingFiles);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            showCompletions(options) {
+                const completions = options.join('  ');
+                this.addOutput(`<span class="info">Possible completions:</span> ${completions}`);
+            }
+            
+            executeCommand(commandLine) {
+                this.addOutput(`<span class="user">visitor</span>@<span class="path">portfolio</span>:~$ ${commandLine}`);
+                
+                const parts = commandLine.split(' ');
+                const command = parts[0];
+                const args = parts.slice(1);
+                
+                if (this.gameState.active && ['w', 'a', 's', 'd', 'quit'].includes(command)) {
+                    this.commands[command](args);
+                } else if (command === 'dino') {
+                    // Handle dino game commands
+                    if (args.length === 0) {
+                        this.startDinoGame();
+                    } else if (args[0] === 'play') {
+                        this.playDinoGame();
+                    } else if (args[0] === 'instructions') {
+                        this.showDinoInstructions();
+                    } else if (args[0] === 'quit' || args[0] === 'exit') {
+                        this.addOutput('Returning to main menu.', 'info');
+                    } else {
+                        this.addOutput(`Unknown dino command: ${args[0]}. Use 'play', 'instructions', or 'quit'.`, 'error');
+                    }
+                } else if (this.commands[command]) {
+                    this.commands[command](args);
+                } else {
+                    this.addOutput(TEXT.COMMAND_NOT_FOUND.replace('${command}', command), 'error');
+                }
+            }
+            
+            addOutput(text, className = '') {
+                const div = document.createElement('div');
+                div.innerHTML = text;
+                div.className = `output ${className}`;
+                this.output.appendChild(div);
+                this.scrollToBottom();
+            }
+            
+            scrollToBottom() {
+                // Scroll the output container to the bottom
+                this.output.scrollTop = this.output.scrollHeight;
+            }
+            
+            typeText(text, className = '') {
+                const div = document.createElement('div');
+                div.className = `output ${className}`;
+                this.output.appendChild(div);
+                
+                let i = 0;
+                const speed = 30; // milliseconds per character
+                
+                const typeWriter = () => {
+                    if (i < text.length) {
+                        // Handle HTML tags by checking if we're inside a tag
+                        if (text.charAt(i) === '<') {
+                            // Find the closing '>'
+                            const closingTagIndex = text.indexOf('>', i);
+                            if (closingTagIndex !== -1) {
+                                // Add the entire tag at once
+                                div.innerHTML += text.substring(i, closingTagIndex + 1);
+                                i = closingTagIndex + 1;
+                            } else {
+                                div.innerHTML += text.charAt(i);
+                                i++;
+                            }
+                        } else {
+                            // Add regular character
+                            div.innerHTML += text.charAt(i);
+                            i++;
+                        }
+                        this.scrollToBottom();
+                        setTimeout(typeWriter, speed);
+                    }
+                };
+                
+                typeWriter();
+            }
+            
+            showHelp() {
+                this.addOutput(TEXT.HELP_TEXT);
+            }
+            
+            showAbout() {
+                this.addOutput(TEXT.ABOUT_TEXT);
+            }
+            
+            showPortfolio() {
+                this.addOutput(TEXT.PORTFOLIO_TEXT);
+            }
+            
+            showSkills() {
+                this.addOutput(TEXT.SKILLS_TEXT);
+            }
+            
+            showContact() {
+                this.typeText(TEXT.CONTACT_TEXT, 'output');
+            }
+            
+            clearScreen() {
+                this.output.innerHTML = '';
+            }
+            
+            showDate() {
+                const now = new Date();
+                this.addOutput(now.toString());
+            }
+            
+            showWhoami() {
+                this.addOutput('visitor');
+            }
+            
+            showVersion() {
+                this.addOutput('v1.0.0, enter the matrix with the "matrix" command.');
+            }
+            
+            startMatrixEffect() {
+                // Show message to user
+                this.addOutput('Entering the Matrix... Press any key to exit');
+                
+                // Create overlay element for the matrix effect
+                const matrixOverlay = document.createElement('div');
+                matrixOverlay.id = 'matrix-overlay';
+                matrixOverlay.style.position = 'fixed';
+                matrixOverlay.style.top = '0';
+                matrixOverlay.style.left = '0';
+                matrixOverlay.style.width = '100%';
+                matrixOverlay.style.height = '100%';
+                matrixOverlay.style.backgroundColor = '#000';
+                matrixOverlay.style.zIndex = '9999';
+                matrixOverlay.style.overflow = 'hidden';
+                
+                // Create canvas for the matrix effect
+                const canvas = document.createElement('canvas');
+                canvas.id = 'matrix-canvas';
+                canvas.style.display = 'block';
+                canvas.style.position = 'absolute';
+                canvas.style.top = '0';
+                canvas.style.left = '0';
+                
+                matrixOverlay.appendChild(canvas);
+                document.body.appendChild(matrixOverlay);
+                
+                // Force a reflow to ensure the canvas is properly placed
+                canvas.offsetWidth; 
+
+                // Matrix characters - katakana and Latin characters
+                const chars = "アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                const charArray = chars.split('');
+                
+                const ctx = canvas.getContext('2d');
+                const fontSize = 14;
+                
+                // Wait for canvas to be in the DOM before setting dimensions
+                setTimeout(() => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    const columns = Math.floor(canvas.width / fontSize);
+                    
+                    // Create drops for each column
+                    const drops = [];
+                    for (let i = 0; i < columns; i++) {
+                        drops[i] = Math.floor(Math.random() * -100); // Start drops higher up
+                    }
+                    
+                    // Draw function for the matrix effect
+                    const draw = () => {
+                        // Semi-transparent black to create trail effect
+                        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        ctx.fillStyle = '#0f0';
+                        ctx.font = `${fontSize}px monospace`;
+                        
+                        for (let i = 0; i < drops.length; i++) {
+                            const text = charArray[Math.floor(Math.random() * charArray.length)];
+                            // Ensure we don't go beyond canvas boundaries
+                            if (i * fontSize < canvas.width && drops[i] * fontSize < canvas.height) {
+                                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                            }
+                            
+                            // Reset drop if it reaches bottom
+                            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                                drops[i] = 0;
+                            }
+                            
+                            drops[i]++;
+                        }
+                    };
+                    
+                    // Use requestAnimationFrame for smoother animation
+                    let animationFrame;
+                    const animate = () => {
+                        draw();
+                        animationFrame = requestAnimationFrame(animate);
+                    };
+                    
+                    // Start animation
+                    animate();
+                    
+                    // Add event listener to remove the effect
+                    const exitMatrix = (e) => {
+                        cancelAnimationFrame(animationFrame);
+                        if (document.contains(matrixOverlay)) {
+                            document.body.removeChild(matrixOverlay);
+                        }
+                        document.removeEventListener('keydown', exitMatrix);
+                        this.addOutput('Exited the Matrix.');
+                    };
+                    
+                    document.addEventListener('keydown', exitMatrix);
+                }, 50); // Small delay to ensure canvas is rendered
+            }
+            
+
+            
+            listFiles() {
+                const files = Object.keys(this.files).join('  ');
+                this.addOutput(`<span class="info">Files:</span> ${files}`);
+            }
+            
+            readFile(args) {
+                if (args.length === 0) {
+                    this.addOutput(TEXT.USAGE_CAT, 'error');
+                    return;
+                }
+                
+                const filename = args[0];
+                if (this.files[filename]) {
+                    this.addOutput(`<span class="info">=== ${filename} ===</span>\n${this.files[filename]}`);
+                } else {
+                    this.addOutput(`File not found: ${filename}`, 'error');
+                }
+            }
+            
+            secretCommand() {
+                this.addOutput(TEXT.SECRET_TEXT);
+            }
+            
+            startGame() {
+                if (this.gameState.active) {
+                    this.addOutput(TEXT.GAME_ALREADY_RUNNING);
+                    return;
+                }
+                
+                this.gameState.active = true;
+                this.gameState.score = 0;
+                this.gameState.playerX = 1;
+                this.gameState.playerY = 1;
+                
+                // Create game board
+                this.gameState.board = Array(8).fill().map(() => Array(16).fill('.'));
+                
+                // Add walls
+                for (let i = 0; i < 8; i++) {
+                    this.gameState.board[i][0] = '#';
+                    this.gameState.board[i][15] = '#';
+                }
+                for (let i = 0; i < 16; i++) {
+                    this.gameState.board[0][i] = '#';
+                    this.gameState.board[7][i] = '#';
+                }
+                
+                // Add some obstacles
+                this.gameState.board[3][8] = '#';
+                this.gameState.board[4][8] = '#';
+                this.gameState.board[2][12] = '#';
+                this.gameState.board[5][5] = '#';
+                
+                // Add treasures
+                this.gameState.treasures = [
+                    {x: 13, y: 2}, {x: 3, y: 6}, {x: 10, y: 5}, {x: 6, y: 3}
+                ];
+                
+                this.gameState.treasures.forEach(treasure => {
+                    this.gameState.board[treasure.y][treasure.x] = '$';
+                });
+                
+                this.addOutput(TEXT.GAME_START_TEXT);
+                this.renderGame();
+            }
+            
+            renderGame() {
+                if (!this.gameState.active) return;
+                
+                // Create board copy and add player
+                const displayBoard = this.gameState.board.map(row => [...row]);
+                displayBoard[this.gameState.playerY][this.gameState.playerX] = '@';
+                
+                const boardText = displayBoard.map(row => row.join(' ')).join('\n');
+                const statusText = `
+<div class="game-board">${boardText}</div>
+
+<span class="info">Score: ${this.gameState.score}/4 treasures collected</span>
+<span class="help-command">@ = You  |  $ = Treasure  |  # = Wall  |  . = Empty</span>`;
+                
+                this.addOutput(statusText);
+            }
+            
+            gameMove(args) {
+                if (!this.gameState.active) {
+                    this.addOutput(TEXT.NO_GAME_RUNNING_START, 'error');
+                    return;
+                }
+                
+                const command = args.length > 0 ? args[0] : this.commandHistory[0];
+                let newX = this.gameState.playerX;
+                let newY = this.gameState.playerY;
+                
+                switch(command) {
+                    case 'w': newY--; break;
+                    case 'a': newX--; break;
+                    case 's': newY++; break;
+                    case 'd': newX++; break;
+                    default: 
+                        this.addOutput(TEXT.INVALID_MOVE, 'error');
+                        return;
+                }
+                
+                // Check bounds and walls
+                if (newX < 0 || newX >= 16 || newY < 0 || newY >= 8 || this.gameState.board[newY][newX] === '#') {
+                    this.addOutput(TEXT.WALL_HIT, 'error');
+                    this.renderGame();
+                    return;
+                }
+                
+                // Check for treasure
+                if (this.gameState.board[newY][newX] === '$') {
+                    this.gameState.score++;
+                    this.gameState.board[newY][newX] = '.';
+                    this.addOutput(TEXT.TREASURE_COLLECTED, 'success');
+                }
+                
+                // Update player position
+                this.gameState.playerX = newX;
+                this.gameState.playerY = newY;
+                
+                // Check win condition
+                if (this.gameState.score === 4) {
+                    this.addOutput(TEXT.WIN_GAME_TEXT.replace('${score}', this.gameState.score), 'success');
+                    this.gameState.active = false;
+                    return;
+                }
+                
+                this.renderGame();
+            }
+            
+            quitGame() {
+                if (this.gameState.active) {
+                    this.gameState.active = false;
+                    this.addOutput(TEXT.GAME_EXITED, 'info');
+                } else {
+                    this.addOutput(TEXT.NO_GAME_RUNNING, 'error');
+                }
+            }
+            
+            startDinoGame() {
+                this.dinoGameState = {
+                    active: false,
+                    score: 0,
+                    gameSpeed: 5,
+                    obstacles: [],
+                    isJumping: false,
+                    jumpHeight: 0,
+                    jumpVelocity: 0,
+                    gravity: 0.6,
+                    dinoY: 0,
+                    gameCanvas: null,
+                    animationId: null,
+                    gameInterval: null
+                };
+                
+                this.addOutput(TEXT.DINO_MENU);
+                
+                // After showing the menu, wait for user input
+                // The actual game will be handled by a new command system
+            }
+            
+            showDinoInstructions() {
+                this.addOutput(TEXT.DINO_INSTRUCTIONS);
+            }
+            
+            playDinoGame() {
+                if (this.dinoGameState && this.dinoGameState.active) {
+                    this.addOutput('Dino game is already running!', 'error');
+                    return;
+                }
+                
+                // Create game canvas
+                const gameDiv = document.createElement('div');
+                gameDiv.className = 'dino-game-container';
+                gameDiv.innerHTML = `
+                    <div class="dino-game-header">
+                        <div class="dino-score">Score: <span id="dino-score">0</span></div>
+                        <div class="dino-high-score">High Score: <span id="dino-high-score">0</span></div>
+                    </div>
+                    <canvas id="dino-game-canvas" width="600" height="150"></canvas>
+                    <div class="dino-game-controls">
+                        <p>Press SPACE to jump, DOWN to duck</p>
+                    </div>
+                `;
+                
+                const outputDiv = document.createElement('div');
+                outputDiv.className = 'output';
+                outputDiv.appendChild(gameDiv);
+                this.output.appendChild(outputDiv);
+                
+                // Initialize game state
+                this.dinoGameState = {
+                    active: true,
+                    canvas: document.getElementById('dino-game-canvas'),
+                    ctx: null,
+                    score: 0,
+                    highScore: parseInt(localStorage.getItem('dinoHighScore')) || 0,
+                    gameSpeed: 5,
+                    obstacles: [],
+                    isJumping: false,
+                    jumpHeight: 0,
+                    jumpVelocity: 0,
+                    gravity: 0.6,
+                    dinoY: 0,
+                    dinoYStart: 100,
+                    gameOver: false,
+                    animationId: null,
+                    lastObstacleTime: 0
+                };
+                
+                this.dinoGameState.ctx = this.dinoGameState.canvas.getContext('2d');
+                
+                // Draw initial game state
+                this.drawDinoGame();
+                
+                // Start game loop
+                this.startDinoGameLoop();
+                
+                // Add event listeners for controls
+                document.addEventListener('keydown', this.handleDinoInput.bind(this));
+            }
+            
+            handleDinoInput(e) {
+                if (!this.dinoGameState || !this.dinoGameState.active) return;
+                
+                if (e.code === 'Space' || e.key === ' ') {
+                    e.preventDefault();
+                    if (!this.dinoGameState.isJumping && !this.dinoGameState.gameOver) {
+                        this.jumpDino();
+                    } else if (this.dinoGameState.gameOver) {
+                        this.restartDinoGame();
+                    }
+                } else if (e.key === 'ArrowDown' && !this.dinoGameState.gameOver) {
+                    e.preventDefault();
+                    // Ducking mechanics would go here
+                } else if ((e.key === 'r' || e.key === 'R') && this.dinoGameState.gameOver) {
+                    this.restartDinoGame();
+                }
+            }
+            
+            jumpDino() {
+                if (!this.dinoGameState.isJumping) {
+                    this.dinoGameState.isJumping = true;
+                    this.dinoGameState.jumpVelocity = -12; // Initial jump velocity
+                }
+            }
+            
+            updateDino() {
+                if (!this.dinoGameState.active || this.dinoGameState.gameOver) return;
+                
+                // Apply gravity
+                this.dinoGameState.jumpVelocity += this.dinoGameState.gravity;
+                this.dinoGameState.dinoY += this.dinoGameState.jumpVelocity;
+                
+                // Check if dino has landed
+                if (this.dinoGameState.dinoY >= 0) {
+                    this.dinoGameState.dinoY = 0;
+                    this.dinoGameState.isJumping = false;
+                }
+                
+                // Update score
+                this.dinoGameState.score += 0.1;
+                document.getElementById('dino-score').textContent = Math.floor(this.dinoGameState.score);
+                
+                // Increase game speed over time
+                if (this.dinoGameState.score > 0 && Math.floor(this.dinoGameState.score) % 100 === 0) {
+                    this.dinoGameState.gameSpeed += 0.5;
+                }
+                
+                // Generate obstacles
+                const now = Date.now();
+                if (now - this.dinoGameState.lastObstacleTime > 1500 - Math.min(this.dinoGameState.gameSpeed * 20, 1000)) {
+                    this.generateDinoObstacle();
+                    this.dinoGameState.lastObstacleTime = now;
+                }
+                
+                // Update obstacles
+                this.updateDinoObstacles();
+                
+                // Check collisions
+                this.checkDinoCollisions();
+            }
+            
+            generateDinoObstacle() {
+                const height = 20 + Math.random() * 20;
+                const width = 15 + Math.random() * 10;
+                
+                this.dinoGameState.obstacles.push({
+                    x: this.dinoGameState.canvas.width,
+                    y: this.dinoGameState.canvas.height - height,
+                    width: width,
+                    height: height
+                });
+            }
+            
+            updateDinoObstacles() {
+                for (let i = this.dinoGameState.obstacles.length - 1; i >= 0; i--) {
+                    const obstacle = this.dinoGameState.obstacles[i];
+                    obstacle.x -= this.dinoGameState.gameSpeed;
+                    
+                    // Remove obstacles that are off screen
+                    if (obstacle.x + obstacle.width < 0) {
+                        this.dinoGameState.obstacles.splice(i, 1);
+                        // Add points for passing an obstacle
+                        this.dinoGameState.score += 1;
+                        document.getElementById('dino-score').textContent = Math.floor(this.dinoGameState.score);
+                    }
+                }
+            }
+            
+            checkDinoCollisions() {
+                const dinoX = 50;
+                const dinoWidth = 44;
+                const dinoHeight = 47;
+                const dinoY = this.dinoGameState.canvas.height - 47 - this.dinoGameState.dinoY;
+                
+                for (const obstacle of this.dinoGameState.obstacles) {
+                    if (
+                        dinoX < obstacle.x + obstacle.width &&
+                        dinoX + dinoWidth > obstacle.x &&
+                        dinoY < obstacle.y + obstacle.height &&
+                        dinoY + dinoHeight > obstacle.y
+                    ) {
+                        // Collision detected
+                        this.endDinoGame();
+                        return;
+                    }
+                }
+            }
+            
+            endDinoGame() {
+                this.dinoGameState.gameOver = true;
+                this.dinoGameState.active = false;
+                
+                // Update high score
+                if (this.dinoGameState.score > this.dinoGameState.highScore) {
+                    this.dinoGameState.highScore = this.dinoGameState.score;
+                    localStorage.setItem('dinoHighScore', Math.floor(this.dinoGameState.highScore).toString());
+                    document.getElementById('dino-high-score').textContent = Math.floor(this.dinoGameState.highScore);
+                }
+                
+                // Add game over message
+                const gameOverDiv = document.createElement('div');
+                gameOverDiv.className = 'output info';
+                gameOverDiv.innerHTML = `Game Over! Final Score: ${Math.floor(this.dinoGameState.score)} | High Score: ${Math.floor(this.dinoGameState.highScore)}<br>Press R to restart or type 'dino' to return to menu.`;
+                this.output.appendChild(gameOverDiv);
+            }
+            
+            restartDinoGame() {
+                // Reset game state
+                this.dinoGameState.score = 0;
+                this.dinoGameState.gameSpeed = 5;
+                this.dinoGameState.obstacles = [];
+                this.dinoGameState.isJumping = false;
+                this.dinoGameState.jumpHeight = 0;
+                this.dinoGameState.jumpVelocity = 0;
+                this.dinoGameState.dinoY = 0;
+                this.dinoGameState.gameOver = false;
+                this.dinoGameState.active = true;
+                this.dinoGameState.lastObstacleTime = Date.now();
+                
+                document.getElementById('dino-score').textContent = '0';
+                
+                // Restart game loop
+                this.startDinoGameLoop();
+            }
+            
+            drawDinoGame() {
+                if (!this.dinoGameState.ctx) return;
+                
+                const ctx = this.dinoGameState.ctx;
+                const canvas = this.dinoGameState.canvas;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw ground
+                ctx.fillStyle = '#333';
+                ctx.fillRect(0, canvas.height - 10, canvas.width, 10);
+                
+                // Draw dino
+                ctx.fillStyle = '#333';
+                const dinoY = canvas.height - 47 - this.dinoGameState.dinoY;
+                ctx.fillRect(50, dinoY, 44, 47);
+                
+                // Draw eyes
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(80, dinoY + 10, 5, 5);
+                
+                // Draw obstacles (cacti)
+                ctx.fillStyle = '#2E8B57';
+                for (const obstacle of this.dinoGameState.obstacles) {
+                    ctx.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+                }
+            }
+            
+            startDinoGameLoop() {
+                if (this.dinoGameState.animationId) {
+                    cancelAnimationFrame(this.dinoGameState.animationId);
+                }
+                
+                const gameLoop = () => {
+                    if (!this.dinoGameState.active) return;
+                    
+                    this.updateDino();
+                    this.drawDinoGame();
+                    
+                    if (!this.dinoGameState.gameOver) {
+                        this.dinoGameState.animationId = requestAnimationFrame(gameLoop);
+                    }
+                };
+                
+                this.dinoGameState.animationId = requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        // Initialize terminal when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new Terminal();
+        });
+    </script>
+</body>
+</html>
